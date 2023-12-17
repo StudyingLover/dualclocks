@@ -3,6 +3,10 @@
   "displayName": "DualClocks",
   "description": "DualClocks is a versatile and user-friendly VSCode extension designed to streamline the workflow of developers and teams working across multiple time zones. With its innovative dual time zone display, DualClocks enables users to effortlessly monitor and synchronize time across different regions of the world. Whether you're collaborating with international clients, managing remote teams, or just keeping track of global events, DualClocks makes it simple and efficient.",
   "version": "0.0.1",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/StudyingLover/dualclocks"
+  },
   "engines": {
     "vscode": "^1.85.0"
   },
