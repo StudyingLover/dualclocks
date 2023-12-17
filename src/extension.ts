@@ -15,18 +15,15 @@ export function activate(context: vscode.ExtensionContext) {
             'Time Zones', // Title of the panel displayed to the user
             vscode.ViewColumn.One, // Editor column to show the new webview panel in.
             {
-                // 启用脚本在webview上下文中运行
-                enableScripts: true
-            } // Webview options.
+				// 启用脚本在webview上下文中运行
+				enableScripts: true
+			} // Webview options.
         );
 
         panel.webview.html = getWebviewContent();
     });
 
     context.subscriptions.push(disposable);
-
-    // 直接调用命令
-    vscode.commands.executeCommand('timezones.showTimeZones');
 }
 
 function aSimpleDataProvider(): vscode.TreeDataProvider<{ key: string }> {
@@ -93,7 +90,6 @@ function getWebviewContent() {
         </style>
     </head>
     <body>
-
         <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.33/moment-timezone-with-data.min.js"></script>
         <div class="timezone-container">
