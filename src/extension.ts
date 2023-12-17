@@ -30,7 +30,7 @@ function aSimpleDataProvider(): vscode.TreeDataProvider<{ key: string }> {
     return {
         getTreeItem: (element: { key: string }): vscode.TreeItem => {
             return {
-                label: `Time Zone - ${element.key}`,
+                label: `Time Zone  ${element.key}`,
                 command: { 
                     command: 'timezones.showTimeZones', 
                     title: '', 
@@ -41,7 +41,7 @@ function aSimpleDataProvider(): vscode.TreeDataProvider<{ key: string }> {
         },
         getChildren: (element?: { key: string }): Thenable<{ key: string }[]> => {
             return Promise.resolve([
-                { key: 'TimeZone1' },
+                { key: '' },
             ]);
         }
     };
