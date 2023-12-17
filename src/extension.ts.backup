@@ -1,0 +1,102 @@
+import * as vscode from 'vscode';
+import * as moment from 'moment-timezone';
+
+export function activate(context: vscode.ExtensionContext) {
+    // 注册视图
+    const timeZonesTreeView = vscode.window.createTreeView('timezones-view', {
+        treeDataProvider: aSimpleDataProvider()
+    });
+    context.subscriptions.push(timeZonesTreeView);
+
+    // 注册命令
+    let disposable = vscode.commands.registerCommand('timezones.showTimeZones', () => {
+        const panel = vscode.window.createWebviewPanel(
+            'timeZones', // Identifies the type of the webview. Used internally
+            'Time Zones', // Title of the panel displayed to the user
+            vscode.ViewColumn.One, // Editor column to show the new webview panel in.
+            {
+				// 启用脚本在webview上下文中运行
+				enableScripts: true
+			} // Webview options.
+        );
+
+        panel.webview.html = getWebviewContent();
+
+        // 从设置中读取默认的时区，并发送给 webview
+		const defaultTimezones = vscode.workspace.getConfiguration().get<string[]>('timezones.default', []);        panel.webview.postMessage({
+            command: 'setDefaultTimezones',
+            timezones: defaultTimezones
+        });
+
+        // 监听 webview 发送的消息
+        panel.webview.onDidReceiveMessage(
+            message => {
+                switch (message.command) {
+                    case 'saveTimezones':
+                        // 保存用户选中的时区
+                        vscode.workspace.getConfiguration().update('timezones.default', message.timezones, vscode.ConfigurationTarget.Global);
+                        return;
+                }
+            },
+            undefined,
+            context.subscriptions
+        );
+    });
+
+    context.subscriptions.push(disposable);
+}
+
+function aSimpleDataProvider(): vscode.TreeDataProvider<{ key: string }> {
+	return {
+		getTreeItem: (element: { key: string }): vscode.TreeItem => {
+			return {
+				label: `Time Zone - ${element.key}`,
+				command: { 
+					command: 'timezones.showTimeZones', 
+					title: '', 
+					arguments: [element.key] 
+				}, // 命令处理
+				iconPath: vscode.Uri.parse('path/to/icon'), // 指定图标路径
+			};
+		},
+		getChildren: (element?: { key: string }): Thenable<{ key: string }[]> => {
+			// 从设置中读取常用时区
+			const commonTimezones = vscode.workspace.getConfiguration().get<string[]>('timezones.common', []);
+			return Promise.resolve(commonTimezones.map(timezone => ({ key: timezone })));
+		}
+	};
+}
+
+function getWebviewContent() {
+	return `
+	<!DOCTYPE html>
+	<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Time Zones</title>
+	</head>
+	<body>
+		<select id="timezone-select-1"></select>
+		<select id="timezone-select-2"></select>
+		<button id="save-button">Save</button>
+		<script>
+			const timezoneSelect1 = document.getElementById('timezone-select-1');
+			const timezoneSelect2 = document.getElementById('timezone-select-2');
+			const saveButton = document.getElementById('save-button');
+
+			saveButton.addEventListener('click', function() {
+				const timezone1 = timezoneSelect1.value;
+				const timezone2 = timezoneSelect2.value;
+				// 发送消息给 VS Code，保存当前选中的时区
+				vscode.postMessage({
+					command: 'saveTimezones',
+					timezones: [timezone1, timezone2]
+				});
+			});
+		</script>
+	</body>
+	</html>`;
+}
+
+export function deactivate() {}

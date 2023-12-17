@@ -1,0 +1,73 @@
+{
+  "name": "dualclocks",
+  "displayName": "DualClocks",
+  "description": "DualClocks is a versatile and user-friendly VSCode extension designed to streamline the workflow of developers and teams working across multiple time zones. With its innovative dual time zone display, DualClocks enables users to effortlessly monitor and synchronize time across different regions of the world. Whether you're collaborating with international clients, managing remote teams, or just keeping track of global events, DualClocks makes it simple and efficient.",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "viewsContainers": {
+        "activitybar": [
+            {
+                "id": "timezones-view-container",
+                "title": "Time Zones",
+                "icon": "media/timezones-icon.svg"
+            }
+        ]
+    },
+    "views": {
+        "timezones-view-container": [
+            {
+                "id": "timezones-view",
+                "name": "Time Zones"
+            }
+        ]
+    },
+    "commands": [
+        {
+            "command": "timezones.showTimeZones",
+            "title": "Show Time Zones"
+        }
+    ],
+    "configuration": {
+      "properties": {
+          "timezones.common": {
+              "type": "array",
+              "default": ["Asia/Shanghai", "Asia/Tokyo"],
+              "description": "Common timezones"
+          }
+      }
+  }
+},
+  "scripts": {
+    "vscode:prepublish": "npm run package",
+    "compile": "webpack",
+    "watch": "webpack --watch",
+    "package": "webpack --mode production --devtool hidden-source-map",
+    "compile-tests": "tsc -p . --outDir out",
+    "watch-tests": "tsc -p . -w --outDir out",
+    "pretest": "npm run compile-tests && npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "vscode-test"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.85.0",
+    "@types/mocha": "^10.0.6",
+    "@types/node": "18.x",
+    "@typescript-eslint/eslint-plugin": "^6.13.1",
+    "@typescript-eslint/parser": "^6.13.1",
+    "eslint": "^8.54.0",
+    "typescript": "^5.3.2",
+    "ts-loader": "^9.5.1",
+    "webpack": "^5.89.0",
+    "webpack-cli": "^5.1.4",
+    "@vscode/test-cli": "^0.0.4",
+    "@vscode/test-electron": "^2.3.8"
+  }
+}
